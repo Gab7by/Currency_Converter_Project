@@ -5,9 +5,6 @@ import SelectCurrency from "./components/SelectCurrency";
 import Amount from "./components/Amount";
 import { useState, useEffect } from "react";
 
-const URL = "https://api.fastforex.io/fetch-all";
-const API_KEY = "fd1e1a07be-e5843756e0-t7h4oc";
-
 function App() {
   const [currencies, setCurrencies] = useState([]);
   const [fromCurrency, setFromCurrency] = useState();
@@ -27,16 +24,18 @@ function App() {
 
   useEffect(() => {
     async function fetchCurrencies() {
-      const res = await fetch(`${URL}?api_key=${API_KEY}`);
+      const res = await fetch(
+        `https://v6.exchangerate-api.com/v6/1f751992a9c0f6cdae68c44f/latest/USD`
+      );
       const data = await res.json();
       console.log(data);
 
-      const currencyCodes = Object.keys(data.results);
-      const firstCurrency = Object.keys(data.results)[0];
-      setCurrencies([data.base, ...currencyCodes]);
-      setFromCurrency(data.base);
+      const currencyCodes = Object.keys(data.conversion_rates);
+      const firstCurrency = Object.keys(data.conversion_rates)[1];
+      setCurrencies([data.base_code, ...currencyCodes]);
+      setFromCurrency(data.base_code);
       setToCurrency(firstCurrency);
-      setExchangeRate(data.results[firstCurrency]);
+      setExchangeRate(data.conversion_rates[firstCurrency]);
     }
     fetchCurrencies();
   }, []);
@@ -44,12 +43,13 @@ function App() {
   useEffect(() => {
     if (fromCurrency != null && toCurrency != null) {
       fetch(
-        `${URL}?api_key=${API_KEY}&base=${fromCurrency}&results=${toCurrency}`
+        `https://v6.exchangerate-api.com/v6/1f751992a9c0f6cdae68c44f/latest/USD`
       )
         .then((res) => res.json())
-        .then((data) => setExchangeRate(data.results[toCurrency]));
+        .then((data) => setExchangeRate(data.conversion_rates[toCurrency]));
     }
   }, [fromCurrency, toCurrency]);
+
   return (
     <>
       <div

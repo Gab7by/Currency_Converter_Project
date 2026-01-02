@@ -41,15 +41,21 @@ function App() {
   }, []);
 
   useEffect(() => {
-    if (fromCurrency != null && toCurrency != null) {
+    if (fromCurrency !== null && toCurrency !== null) {
       fetch(
-        `https://v6.exchangerate-api.com/v6/1f751992a9c0f6cdae68c44f/latest/USD`
+        `https://v6.exchangerate-api.com/v6/1f751992a9c0f6cdae68c44f/latest/${fromCurrency}`
       )
         .then((res) => res.json())
-        .then((data) => setExchangeRate(data.conversion_rates[toCurrency]));
+        .then((data) => {
+          if (data.conversion_rates && data.conversion_rates[toCurrency]) {
+            setExchangeRate(data.conversion_rates[toCurrency]);
+          }
+        })
+        .catch((error) => {
+          console.error("Error fetching exchange rate:", error);
+        });
     }
   }, [fromCurrency, toCurrency]);
-
   return (
     <>
       <div

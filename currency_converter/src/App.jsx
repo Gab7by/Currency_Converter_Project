@@ -1,6 +1,6 @@
 import "./App.css";
 import Currency_background from "./assets/Currency_background.jpg";
-import Header from "./Components/header";
+import Header from "./components/header";
 import SelectCurrency from "./components/SelectCurrency";
 import Amount from "./components/Amount";
 import { useState, useEffect } from "react";
